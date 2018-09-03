@@ -35,7 +35,7 @@ heandleSignOut = () => {
             <Menu.Item as={NavLink} to="/people" name="People" />}
             {authenticated &&
             <Menu.Item>
-              <Button as={Link} to="/createEvent" floated="right" positive inverted content="Create Event" />
+            <Button as={Link} to="/createEvents" floated="right" positive inverted content="Create Event" />
             </Menu.Item>}
             {authenticated ? <SignedInMenu signOut={this.heandleSignOut} /> : <SignedOutMenu signIn={this.heandleSignIn} />}
           </Container>

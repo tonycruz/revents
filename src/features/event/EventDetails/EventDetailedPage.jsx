@@ -17,18 +17,16 @@ const mapState = (state, ownProps) => {
   }
 };
 const EventDetailedPage = ({event}) => {
-  return (
-    <Grid>
+  return <Grid>
       <Grid.Column width={10}>
-        <EventDetailedHeader event={event}/>
+        <EventDetailedHeader event={event} />
         <EventDetailedInfo event={event} />
-        <EventDetailedChat/>
+        <EventDetailedChat />
       </Grid.Column>
       <Grid.Column width={6}>
         <EventDetailedSidebar attendees={event.attendees} />
       </Grid.Column>
-    </Grid>
-  );
+    </Grid>;
 };
 
 export default connect(mapState)(EventDetailedPage);

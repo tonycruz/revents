@@ -1,19 +1,20 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withFirebase } from "react-redux-firebase";
 import { Menu, Container, Button } from "semantic-ui-react";
 import { NavLink, Link, withRouter } from "react-router-dom";
 import SignedOutMenu from "../Menus/SignedOutMenu";
 import SignedInMenu from "../Menus/SignedInMenu";
 import { openModal } from "../../modals/modalActions";
-import { logout } from "../../auth/authActions";
+//import { logout } from "../../auth/authActions";
 
 const actions = {
   openModal,
-  logout
 };
 
 const mapState = state => ({
-  auth: state.auth
+  auth: state.firebase.auth,
+  profile: state.firebase.profile
 });
 
 class NavBar extends Component {
@@ -27,15 +28,14 @@ class NavBar extends Component {
   };
 
   handleSignOut = () => {
-    this.props.logout();
+    this.props.firebase.logout();
     this.props.history.push("/");
   };
 
   render() {
-    const { auth } = this.props;
-    const authenticated = auth.authenticated;
-    return (
-      <div>
+    const { auth, profile } = this.props;
+    const authenticated = auth.isLoaded && !auth.isEmpty;
+    return <div>
         <Menu inverted fixed="top">
           <Container>
             <Menu.Item as={Link} to="/" header>
@@ -44,34 +44,15 @@ class NavBar extends Component {
             </Menu.Item>
             <Menu.Item as={NavLink} to="/events" name="Events" />
             <Menu.Item as={NavLink} to="/test" name="Test" />
-            {authenticated && (
-              <Menu.Item as={NavLink} to="/people" name="People" />
-            )}
-            {authenticated && (
-              <Menu.Item>
-                <Button
-                  as={Link}
-                  to="/createEvents"
-                  floated="right"
-                  positive
-                  inverted
-                  content="Create Event"
-                />
-              </Menu.Item>
-            )}
-            {authenticated ? (
-              <SignedInMenu currentUser={auth.currentUser} signOut={this.heandleSignOut} />
-            ) : (
-              <SignedOutMenu
-                register={this.handleRegister}
-                signIn={this.handleSignIn}
-              />
-            )}
+            {authenticated && <Menu.Item as={NavLink} to="/people" name="People" />}
+            {authenticated && <Menu.Item>
+                <Button as={Link} to="/createEvents" floated="right" positive inverted content="Create Event" />
+              </Menu.Item>}
+            {authenticated ? <SignedInMenu profile={profile} signOut={this.handleSignOut} /> : <SignedOutMenu register={this.handleRegister} signIn={this.handleSignIn} />}
           </Container>
         </Menu>
-      </div>
-    );
+      </div>;
   }
 }
 
-export default withRouter(connect(mapState, actions)(NavBar));
+export default withRouter(withFirebase(connect(mapState, actions)(NavBar)));

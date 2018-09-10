@@ -6,7 +6,7 @@ import NavBar from "../../features/nav/NavBar/NavBar";
 import HomePage from "../../features/home/HomePage";
 import EventDetailedPage from "../../features/event/EventDetails/EventDetailedPage";
 import PeopleDashboard from "../../features/user/PeopleDashboard/PeopleDasbord";
-import UserDetailsPage from "../../features/user/UserDetails/UserDetailsPage";
+import UserDetailedPage from "../../features/user/UserDetails/UserDetailedPage";
 import SettingsDashboard from "../../features/user/Settings/SettingsDashboard";
 import EventForm from "../../features/event/EventForm/EventForm";
 import TestComponent from "../../features/testarea/TestComponent";
@@ -28,7 +28,7 @@ class App extends Component {
                   <Route path="/event/:id" component={EventDetailedPage} />
                   <Route path="/manage/:id" component={EventForm} />
                   <Route path="/people" component={PeopleDashboard} />
-                  <Route path="/profile/:id" component={UserDetailsPage} />
+                  <Route path="/profile/:id" component={UserDetailedPage} />
                   <Route path="/settings" component={SettingsDashboard} />
                   <Route path="/createEvents" component={EventForm} />
                 </Switch>

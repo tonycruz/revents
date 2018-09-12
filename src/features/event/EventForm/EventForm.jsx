@@ -35,7 +35,8 @@ const mapState = (state, ownProps) => {
 
   return {
     initialValues: event,
-    event
+    event,
+    loading: state.async.loading
   };
 };
 const actions = {
@@ -108,13 +109,13 @@ class EventForm extends Component {
       });
   };
 
-  onFormSubmit = values => {
+  onFormSubmit = async values => {
     values.venueLatLng = this.state.venueLatLng;
     if (this.props.initialValues.id) {
       if (Object.keys(values.venueLatLng).length === 0) {
         values.venueLatLng = this.props.event.venueLatLng;
       }
-      this.props.updateEvent(values);
+      await this.props.updateEvent(values);
       this.props.history.goBack();
     } else {
       this.props.createEvent(values);
@@ -123,7 +124,7 @@ class EventForm extends Component {
   };
 
   render() {
-    const { invalid, submitting, pristine, event, cancelToggle } = this.props;
+    const { invalid, submitting, pristine, event, cancelToggle, loading } = this.props;
     return <Grid>
         <Script url="https://maps.googleapis.com/maps/api/js?key=AIzaSyATN7V1AYQ7kBLNQ0AmzbrwNMt9ODSCzlI&libraries=places" onLoad={this.handleScriptLoaded} />
         <Grid.Column width={10}>
@@ -138,10 +139,10 @@ class EventForm extends Component {
               {this.state.scriptLoaded && <Field name="venue" type="text" component={PlaceInput} options={{ location: new google.maps.LatLng(this.state.cityLatLng), radius: 1000, types: ["establishment"] }} placeholder="Event venue" onSelect={this.handleVenueSelect} />}
               <Field name="date" type="text" component={DateInput} dateFormat="YYYY-MM-DD HH:mm" timeFormat="HH:mm" showTimeSelect placeholder="Date and time of event" />
 
-              <Button disabled={invalid || submitting || pristine} positive type="submit">
+            <Button loading={loading} disabled={invalid || submitting || pristine} positive type="submit">
                 Submit
               </Button>
-              <Button onClick={this.props.history.goBack} type="button">
+            <Button disabled={loading} onClick={this.props.history.goBack} type="button">
                 Cancel
               </Button>
               <Button onClick={() => cancelToggle(!event.cancelled, event.id)} type="button" color={event.cancelled ? "green" : "red"} floated="right" content={event.cancelled ? "Reactivate Event" : "Cancel Event"} />
